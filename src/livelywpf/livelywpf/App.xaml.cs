@@ -31,7 +31,7 @@ namespace livelywpf
         /// portable lively build, no installer.
         /// Do not forget to also update livelysubprocess project.
         /// </summary>
-        public static readonly bool isPortableBuild = false;
+        public static readonly bool isPortableBuild = true;
         //folder paths
         public static string PathData { get; private set; }
         /*
@@ -75,7 +75,14 @@ namespace livelywpf
 
             #region language
             //CultureInfo.CurrentCulture = new CultureInfo("ru-RU", false); //not working?
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(SaveData.config.Language);
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(SaveData.config.Language);
+            }
+            catch(CultureNotFoundException)
+            {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            }
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("zh-CN"); //zh-CN
             #endregion language
 
@@ -172,7 +179,7 @@ namespace livelywpf
                 W.Show();
                 W.UpdateWallpaperLibrary(); 
 
-                Dialogues.HelpWindow hw = new Dialogues.HelpWindow
+                Dialogues.HelpWindow hw = new Dialogues.HelpWindow(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "docs","help_vid_1.mp4"))
                 {
                     Owner = W,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
